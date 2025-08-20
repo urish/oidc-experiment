@@ -18,7 +18,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const token = await github.rest.actions.getOIDCToken({
+            const token = await github.rest.actions.getIDToken({
               audience: 'https://github.com/'
             });
             core.setOutput('token', token.data.value);
