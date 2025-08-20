@@ -13,18 +13,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Request OIDC Token
-        id: oidc
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await github.rest.actions.getIDToken({
-              audience: 'https://github.com/'
-            });
-            core.setOutput('token', token.data.value);
       - name: Decode and print OIDC token claims
         run: |
-          TOKEN="${{ steps.oidc.outputs.token }}"
+          TOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange")
+          echo $TOKEN
           if [ -z "$TOKEN" ]; then
             echo "No OIDC token received"; exit 1;
           fi
